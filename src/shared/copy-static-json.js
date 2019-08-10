@@ -1,6 +1,7 @@
 let cp = require('./copy')
 let fs = require('fs')
 let path = require('path')
+let utils = require('@architect/utils')
 let series = require('run-series')
 let getBasePaths = require('./get-base-paths')
 
@@ -20,7 +21,8 @@ module.exports = function copyArc(callback) {
     if (err) throw err
     series(paths.map(dest=> {
       return function copier(callback) {
-        let src = path.join(process.cwd(), 'public', 'static.json')
+        let workingDirectory = utils.pathToUnix(process.cwd())
+        let src = path.join(workingDirectory, 'public', 'static.json')
         if (fs.existsSync(src)) {
           cp(src, path.join(dest, 'shared', 'static.json'), callback)
         }

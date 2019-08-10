@@ -1,6 +1,7 @@
 let cp = require('./copy')
 let rmrf = require('rimraf')
 let fs = require('fs')
+let utils = require('@architect/utils')
 let path = require('path')
 let series = require('run-series')
 let getBasePaths = require('./get-base-paths')
@@ -21,7 +22,8 @@ module.exports = function copyArc(callback) {
     if (err) throw err
     series(paths.map(dest=> {
       return function copier(callback) {
-        let src = path.join(process.cwd(), 'src', 'views')
+        let workingDirectory = utils.pathToUnix(process.cwd())
+        let src = path.join(workingDirectory, 'src', 'views')
         if (fs.existsSync(src) && dest.includes('get-')) {
           let finalDest = path.join(dest, 'views')
           rmrf(finalDest, {glob:false}, function(err) {

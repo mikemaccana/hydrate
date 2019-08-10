@@ -2,6 +2,7 @@ let cp = require('./copy')
 let rmrf = require('rimraf')
 let fs = require('fs')
 let path = require('path')
+let utils = require('@architect/utils')
 let series = require('run-series')
 let getBasePaths = require('./get-base-paths')
 
@@ -21,7 +22,8 @@ module.exports = function copyShared(callback) {
     if (err) throw err
     series(paths.map(dest=> {
       return function copier(callback) {
-        let src = path.join(process.cwd(), 'src', 'shared')
+        let workingDirectory = utils.pathToUnix(process.cwd())
+        let src = path.join(workingDirectory, 'src', 'shared')
         if (fs.existsSync(src)) {
           let finalDest = path.join(dest, 'shared')
           rmrf(finalDest, {glob:false}, function(err) {

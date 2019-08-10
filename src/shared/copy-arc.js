@@ -2,6 +2,7 @@ let parse = require('@architect/parser')
 let cp = require('./copy')
 let fs = require('fs')
 let path = require('path')
+let utils = require('@architect/utils')
 let series = require('run-series')
 let getBasePaths = require('./get-base-paths')
 
@@ -35,16 +36,18 @@ module.exports = function copyArc(callback) {
  * copy the current manifest into the destination dir
  */
 function copy(dest, callback) {
+  let workingDirectory = utils.pathToUnix(process.cwd())
+  
   // path to destination
   let arcFileDest = path.join(dest, '.arc')
   // .arc in current working dir
-  let arcFileSrc = path.join(process.cwd(), '.arc')
+  let arcFileSrc = path.join(workingDirectory, '.arc')
   // fallback: app.arc in current working dir
-  let arcAppDotArcPath = path.join(process.cwd(), 'app.arc')
+  let arcAppDotArcPath = path.join(workingDirectory, 'app.arc')
   // fallback: arc.yaml in current working dir
-  let arcYamlPath = path.join(process.cwd(), 'arc.yaml')
+  let arcYamlPath = path.join(workingDirectory, 'arc.yaml')
   // fallback: arc.json in current working dir
-  let arcJsonPath = path.join(process.cwd(), 'arc.json')
+  let arcJsonPath = path.join(workingDirectory, 'arc.json')
 
   if (fs.existsSync(arcFileSrc)) {
     cp(arcFileSrc, arcFileDest, callback)
